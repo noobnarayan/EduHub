@@ -19,7 +19,7 @@ const getAllUsers = asyncHandler(async () => {
   if (users) {
     users = JSON.parse(JSON.stringify(users));
   } else {
-    users = await User.find();
+    users = await User.find().populate("courses");
     await redis.set("allUsers", JSON.stringify(users), { EX: 60 });
   }
 

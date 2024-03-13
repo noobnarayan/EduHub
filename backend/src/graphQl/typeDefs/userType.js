@@ -7,7 +7,7 @@ export const UserType = gql`
     email: String!
     password: String!
     role: String!
-    courses: [ID]
+    courses: [Course]
   }
 
   type AuthPayload {
