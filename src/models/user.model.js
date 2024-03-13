@@ -1,31 +1,38 @@
 import mongoose, { Schema } from "mongoose";
-
-const userSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    enum: ["Admin", "Student"],
-    required: true,
-  },
-  courses: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Course",
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+const userSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
-});
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      enum: ["Admin", "Student"],
+      required: true,
+    },
+    courses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    refreshToken: String,
+  },
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

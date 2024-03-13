@@ -10,9 +10,15 @@ export const UserType = gql`
     courses: [ID]
   }
 
+  type AuthPayload {
+    accessToken: String
+    refreshToken: String
+  }
+
   extend type Query {
     users: [User]
     user(id: ID!): User
+    currentUser: User
   }
 
   extend type Mutation {
@@ -21,7 +27,11 @@ export const UserType = gql`
       email: String!
       password: String!
       role: String!
+      courses: [ID]
     ): User
+
+    login(email: String!, password: String!): AuthPayload
+
     updateUser(
       id: ID!
       name: String

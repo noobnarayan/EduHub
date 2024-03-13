@@ -7,6 +7,7 @@ import { CourseType } from "./graphQl/typeDefs/courseType.js";
 import { UserResolvers } from "./graphQl/resolvers/userResolvers.js";
 import { CourseResolvers } from "./graphQl/resolvers/courseResolvers.js";
 import { baseTypeDefs } from "./graphQl/base.js";
+import { verifyJWT } from "./middlewares/auth.middleware.js";
 dotenv.config({ path: "./.env" });
 
 const PORT = process.env.PORT || 3000;
@@ -14,7 +15,15 @@ const PORT = process.env.PORT || 3000;
 const typeDefs = [baseTypeDefs, UserType, CourseType];
 const resolvers = [UserResolvers, CourseResolvers];
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: async ({ req, res }) => {
+    const user = await verifyJWT(req, res).catch((err) => console.log(err));
+
+    return { req, res, user };
+  },
+});
 
 connectDB()
   .then(async () => {

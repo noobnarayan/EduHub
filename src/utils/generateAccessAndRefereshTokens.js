@@ -1,3 +1,4 @@
+import User from "../models/user.model.js";
 export const generateAccessAndRefereshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
@@ -9,8 +10,7 @@ export const generateAccessAndRefereshTokens = async (userId) => {
 
     return { accessToken, refreshToken };
   } catch (error) {
-    throw new ApiError(
-      500,
+    throw new Error(
       `Something went wrong while generating referesh and access token: ${error}`
     );
   }

@@ -1,30 +1,34 @@
-import { ApiError } from "../utils/ApiError.js";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import User from "../models/user.model.js";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js";
-export const verifyJWT = asyncHandler(async (req, res, next) => {
+
+export const verifyJWT = async (req, res) => {
   try {
     const token =
       req.cookies?.accessToken ||
-      req.header("Authorization")?.replace("Bearer", "");
+      req.header("Authorization")?.replace("Bearer ", "").trim();
 
     if (!token) {
-      throw new ApiError(401, "Unauthorized request");
+      throw new Error(401, "Invalid request");
     }
 
-    const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    let decodedToken;
+    try {
+      decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    } catch (error) {
+      console.error("Error verifying token:", error);
+      throw new Error(401, `Something went wrong: ${error}`);
+    }
 
     const user = await User.findById(decodedToken?._id).select(
       "-password -refreshToken"
     );
 
     if (!user) {
-      throw new ApiError(401, "Invalid Access Token");
+      throw new Error(401, "Invalid Access Token");
     }
 
-    req.user = user;
-    next();
+    return user;
   } catch (error) {
-    throw new ApiError(401, error);
+    throw new Error(401, `Something went wrong: ${error}`);
   }
-});
+};

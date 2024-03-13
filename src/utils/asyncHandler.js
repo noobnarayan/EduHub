@@ -1,9 +1,9 @@
-const asyncHandler = (requestHandler) => {
-  return async (req, res, next) => {
+const asyncHandler = (resolverFunction) => {
+  return async (parent, args, context, info) => {
     try {
-      await requestHandler(req, res, next);
-    } catch (err) {
-      next(err);
+      return await resolverFunction(parent, args, context, info);
+    } catch (error) {
+      throw error;
     }
   };
 };
