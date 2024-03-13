@@ -1,15 +1,16 @@
 import {
   createCourse,
   deleteCourse,
+  getAllCourse,
+  getSingleCourse,
   updateCourse,
 } from "../../controllers/course.controller.js";
 import { authRole } from "../../middlewares/authRole.middleware.js";
-import Course from "../../models/course.model.js";
 
 export const CourseResolvers = {
   Query: {
-    courses: async () => await Course.find(),
-    course: async (_, { id }) => await Course.findById(id),
+    courses: async () => await getAllCourse(),
+    course: async (_, { id }) => await getSingleCourse(id),
   },
   Mutation: {
     createCourse: async (_, { name, description, prerequisites }, context) => {

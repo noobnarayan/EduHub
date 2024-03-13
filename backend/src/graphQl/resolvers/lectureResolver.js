@@ -1,15 +1,16 @@
 import {
   createLecture,
   deleteLecture,
+  getAllLectures,
+  getSingleLecture,
   updateLecture,
 } from "../../controllers/lecture.controller.js";
 import { authRole } from "../../middlewares/authRole.middleware.js";
-import Lecture from "../../models/lecture.model.js";
 
 export const LectureResolver = {
   Query: {
-    lectures: async () => await Lecture.find(),
-    lecture: async (_, { id }) => await Lecture.findById(id),
+    lectures: async () => await getAllLectures(),
+    lecture: async (_, { id }) => await getSingleLecture(id),
   },
   Mutation: {
     createLecture: async (_, data, context) => {

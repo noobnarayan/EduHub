@@ -1,5 +1,27 @@
 import Course from "../models/course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { redis } from "../utils/redis/redisClient.js";
+
+const getAllCourse = asyncHandler(async () => {
+  let courses = await redis.get("courses");
+  if (courses.length > 0) {
+    courses = JSON.parse(JSON.stringify(courses));
+  } else {
+    courses = await Course.find();
+    await redis.set("courses", JSON.stringify(courses), { EX: 60 });
+  }
+  return courses;
+});
+
+const getSingleCourse = asyncHandler(async (id) => {
+  let course = await redis.get("course");
+  if (course) {
+    course = JSON.parse(JSON.stringify(course));
+  } else {
+    course = await Course.findById(id);
+    await redis.set("course", JSON.stringify(course), { EX: 60 });
+  }
+});
 
 const createCourse = asyncHandler(async (course) => {
   const { name, description, prerequisites } = course;
@@ -44,4 +66,10 @@ const deleteCourse = asyncHandler(async (id) => {
   return deletedCourse;
 });
 
-export { createCourse, updateCourse, deleteCourse };
+export {
+  createCourse,
+  updateCourse,
+  deleteCourse,
+  getAllCourse,
+  getSingleCourse,
+};

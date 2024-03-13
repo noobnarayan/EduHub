@@ -1,14 +1,18 @@
-import { createUser, loginUser } from "../../controllers/user.controller.js";
+import {
+  createUser,
+  getAllUsers,
+  getSingleUser,
+  loginUser,
+} from "../../controllers/user.controller.js";
 import { authRole } from "../../middlewares/authRole.middleware.js";
-import User from "../../models/user.model.js";
 
 export const UserResolvers = {
   Query: {
     users: async (_, __, context) => {
       await authRole("Admin")(context);
-      return await User.find();
+      return await getAllUsers();
     },
-    user: async (_, { id }) => await User.findById(id),
+    user: async (_, { id }) => await getSingleUser(id),
     currentUser: async (_, __, { user }) => user,
   },
   Mutation: {

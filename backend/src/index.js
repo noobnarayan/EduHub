@@ -10,6 +10,7 @@ import { baseTypeDefs } from "./graphQl/base.js";
 import { verifyJWT } from "./middlewares/auth.middleware.js";
 import { LectureType } from "./graphQl/typeDefs/lectureType.js";
 import { LectureResolver } from "./graphQl/resolvers/lectureResolver.js";
+
 dotenv.config({ path: "./.env" });
 
 const PORT = process.env.PORT || 3000;

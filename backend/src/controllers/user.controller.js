@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { generateAccessAndRefereshTokens } from "../utils/generateAccessAndRefereshTokens.js";
-
+import { redis } from "../utils/redis/redisClient.js";
 const cookieOptions = {
   httpOnly: true,
   secure: process.env.NODE_ENV === "production",
@@ -12,6 +12,32 @@ const cookieOptions = {
       ? "noobnarayan.in"
       : "apollographql.com",
 };
+
+const getAllUsers = asyncHandler(async () => {
+  let users = await redis.get("allUsers");
+
+  if (users) {
+    users = JSON.parse(JSON.stringify(users));
+  } else {
+    users = await User.find();
+    await redis.set("allUsers", JSON.stringify(users), { EX: 60 });
+  }
+
+  return users;
+});
+
+const getSingleUser = asyncHandler(async (id) => {
+  let user = await redis.get("user");
+
+  if (user) {
+    user = JSON.parse(JSON.stringify(user));
+  } else {
+    user = await User.findById(id);
+    await redis.set("user", JSON.stringify(user), { EX: 60 });
+  }
+
+  return user;
+});
 
 const createUser = asyncHandler(async (userData) => {
   const { name, email, password, role, courses } = userData;
@@ -74,4 +100,4 @@ const loginUser = asyncHandler(async (context, userData) => {
   };
 });
 
-export { createUser, loginUser };
+export { createUser, loginUser, getAllUsers, getSingleUser };

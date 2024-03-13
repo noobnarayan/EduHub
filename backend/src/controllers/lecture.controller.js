@@ -1,5 +1,28 @@
 import Lecture from "../models/lecture.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
+import { redis } from "../utils/redis/redisClient.js";
+
+const getAllLectures = asyncHandler(async () => {
+  let lectures = redis.get("lectures");
+
+  if (lectures.length > 0) {
+    lectures = JSON.parse(JSON.stringify(lectures));
+  } else {
+    lectures = await Lecture.find();
+    redis.set("lectures", JSON.stringify(lectures), { EX: 60 });
+  }
+  return lectures;
+});
+
+const getSingleLecture = asyncHandler(async (id) => {
+  let lecture = await redis.get("lecture");
+  if (!lecture) {
+    lecture = JSON.parse(JSON.stringify(lecture));
+  } else {
+    lecture = await Lecture.findById(id);
+    redis.set("lecture", JSON.stringify(lecture), { EX: 60 });
+  }
+});
 
 const createLecture = asyncHandler(async (data) => {
   const { course, title, startTime, endTime, link } = data;
@@ -19,6 +42,11 @@ const updateLecture = asyncHandler(async (data) => {
   if (!course || !title || !startTime || !endTime || !link) {
     throw new Error("All fields are required");
   }
+  const lecture = await Lecture.findByIdAndUpdate(_id, data);
+  if (!lecture) {
+    throw new Error("Something went wrong while updating the lecture");
+  }
+  return lecture;
 });
 
 const deleteLecture = asyncHandler(async (data) => {
@@ -33,4 +61,10 @@ const deleteLecture = asyncHandler(async (data) => {
   return lecture;
 });
 
-export { createLecture, updateLecture, deleteLecture };
+export {
+  createLecture,
+  updateLecture,
+  deleteLecture,
+  getAllLectures,
+  getSingleLecture,
+};
