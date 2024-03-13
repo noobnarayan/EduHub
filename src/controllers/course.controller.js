@@ -10,10 +10,6 @@ const createCourse = asyncHandler(async (course) => {
     throw new Error("Course description is required");
   }
 
-  const existingCourse = await Course.find({ name });
-  if (existingCourse) {
-    throw new Error("Course already exists");
-  }
   const newCourse = await Course.create({ name, description, prerequisites });
   return newCourse;
 });

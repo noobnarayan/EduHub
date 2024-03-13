@@ -12,17 +12,21 @@ export const CourseResolvers = {
     course: async (_, { id }) => await Course.findById(id),
   },
   Mutation: {
-    createCourse: async (_, { name, description, prerequisites }) => {
-      await authRole("Admin");
-      return await createCourse({ name, description, prerequisites });
+    createCourse: async (_, { name, description, prerequisites }, context) => {
+      await authRole("Admin")(context);
+      return await createCourse({ name, description, prerequisites }, context);
     },
 
-    updateCourse: async (_, { id, name, description, prerequisites }) => {
-      await authRole("Admin");
+    updateCourse: async (
+      _,
+      { id, name, description, prerequisites },
+      context
+    ) => {
+      await authRole("Admin")(context);
       return await updateCourse({ id, name, description, prerequisites });
     },
-    deleteUser: async (_, { id }) => {
-      await authRole("Admin");
+    deleteCourse: async (_, { id }, context) => {
+      await authRole("Admin")(context);
       return await deleteCourse(id);
     },
   },

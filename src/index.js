@@ -8,12 +8,14 @@ import { UserResolvers } from "./graphQl/resolvers/userResolvers.js";
 import { CourseResolvers } from "./graphQl/resolvers/courseResolvers.js";
 import { baseTypeDefs } from "./graphQl/base.js";
 import { verifyJWT } from "./middlewares/auth.middleware.js";
+import { LectureType } from "./graphQl/typeDefs/lectureType.js";
+import { LectureResolver } from "./graphQl/resolvers/lectureResolver.js";
 dotenv.config({ path: "./.env" });
 
 const PORT = process.env.PORT || 3000;
 
-const typeDefs = [baseTypeDefs, UserType, CourseType];
-const resolvers = [UserResolvers, CourseResolvers];
+const typeDefs = [baseTypeDefs, UserType, CourseType, LectureType];
+const resolvers = [UserResolvers, CourseResolvers, LectureResolver];
 
 const server = new ApolloServer({
   typeDefs,
