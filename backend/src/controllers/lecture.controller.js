@@ -1,16 +1,14 @@
 import Lecture from "../models/lecture.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { redis } from "../utils/redis/redisClient.js";
-
 const getAllLectures = asyncHandler(async (searchTerm = "") => {
   let lectures = await redis.get(`lectures:${searchTerm}`);
 
   if (!lectures) {
     const filter = { title: { $regex: searchTerm, $options: "i" } };
     lectures = await Lecture.find(filter).populate("course");
-    await redis.set(`lecture:${searchTerm}`, JSON.stringify(lectures), {
-      EX: 60,
-    });
+    await redis.set(`lectures:${searchTerm}`, JSON.stringify(lectures));
+    await redis.expire(`lectures:${searchTerm}`, 60);
   } else {
     lectures = JSON.parse(JSON.stringify(lectures));
   }
@@ -24,7 +22,8 @@ const getSingleLecture = asyncHandler(async (id) => {
     lecture = JSON.parse(JSON.stringify(lecture));
   } else {
     lecture = await Lecture.findById(id).populate("course");
-    await redis.set(`lecture:${id}`, JSON.stringify(lecture), { EX: 60 });
+    await redis.set(`lecture:${id}`, JSON.stringify(lecture));
+    await redis.expire(`lecture:${id}`, 60);
   }
   return lecture;
 });

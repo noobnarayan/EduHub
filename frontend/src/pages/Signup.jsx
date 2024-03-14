@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Input, Tooltip } from "antd";
+import { Input } from "antd";
 import {
   EyeInvisibleOutlined,
   EyeTwoTone,
@@ -8,7 +8,7 @@ import {
   MailOutlined,
 } from "@ant-design/icons";
 import { gql, useMutation, useQuery } from "@apollo/client";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const COURSE_QUERY = gql`
   query {
@@ -41,6 +41,7 @@ const CREATE_USER = gql`
 
 function Signup() {
   const { data, loading, error } = useQuery(COURSE_QUERY);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [courses, setCourses] = useState([]);
   const [name, setName] = useState("");
@@ -49,7 +50,7 @@ function Signup() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [alert, setAlert] = useState("");
   const [continued, setContinued] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (data) {
       setCourses(data.courses);
@@ -93,7 +94,10 @@ function Signup() {
       courses: selectedCourses,
     },
     onCompleted: ({ createUser }) => {
-      console.log(createUser);
+      setIsLoading(false);
+      if (createUser) {
+        navigate("/login");
+      }
     },
     onError: (error) => {
       setAlert(error.message);
@@ -185,7 +189,7 @@ function Signup() {
       }, 2000);
       return;
     }
-
+    setIsLoading(true);
     createUser();
   };
 
@@ -298,7 +302,7 @@ function Signup() {
               }
             }}
           >
-            Continue
+            {!continued ? "Continue" : "Create account"}
           </button>
         </div>
 

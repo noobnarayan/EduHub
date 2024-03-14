@@ -1,11 +1,13 @@
 import "./App.css";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
+import useUpdateUserData from "./hooks/useUpdateUserData";
+import AllRoutes from "./routes/AllRoutes";
 
 function App() {
+  const { data, loading, error } = useUpdateUserData();
+
   return (
     <div className="font-Poppins">
-      <Signup />
+      <AllRoutes />
     </div>
   );
 }
