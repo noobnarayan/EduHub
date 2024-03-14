@@ -3,6 +3,7 @@ import { gql, useQuery } from "@apollo/client";
 import { Button, Input } from "antd";
 import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import _ from "lodash";
+import { useNavigate } from "react-router-dom";
 
 const COURSES_QUERY = gql`
   query getCourses($searchTerm: String) {
@@ -37,11 +38,18 @@ function Courses() {
     }
   }, [data]);
 
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white h-full rounded-lg p-2 md:p-10 my-8">
       <div className="flex flex-col md:flex-row justify-between items-center gap-3">
         <h1 className="text-2xl font-medium">All Courses</h1>
-        <Button type="primary" className="bg-black" icon={<PlusOutlined />}>
+        <Button
+          type="primary"
+          className="bg-black"
+          icon={<PlusOutlined />}
+          onClick={() => navigate("/create-courses")}
+        >
           Create new course
         </Button>
       </div>

@@ -72,7 +72,7 @@ function Dashboard() {
           </div>
         </div>
 
-        <Link to="/dashboard/post-job">
+        <Link to="/ ">
           <div className="h-16 w-56 rounded-xl border shadow flex gap-5 items-center justify-center bg-[#080b0b] hover:cursor-pointer">
             <div className="rounded-full h-10 w-10 p-2 bg-white flex justify-center items-center text-black">
               <PlusCircleOutlined className="text-lg" />

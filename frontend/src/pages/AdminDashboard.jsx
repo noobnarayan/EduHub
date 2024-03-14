@@ -13,6 +13,9 @@ import Dashboard from "../components/adminDashboard/Dashboard";
 import Courses from "../components/adminDashboard/Courses";
 import Lectures from "../components/adminDashboard/Lectures";
 import Students from "../components/adminDashboard/Students";
+import CreateCourses from "../components/addContent/CreateCourses";
+import CreateLectures from "../components/addContent/CreateLectures";
+import CreateStudents from "../components/addContent/CreateStudents";
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -80,6 +83,9 @@ const AdminDashboard = () => {
             <Route path="courses" element={<Courses />} />
             <Route path="lectures" element={<Lectures />} />
             <Route path="students" element={<Students />} />
+            <Route path="create-courses" element={<CreateCourses />} />
+            <Route path="create-lectures" element={<CreateLectures />} />
+            <Route path="create-students" element={<CreateStudents />} />
           </Routes>
         </Content>
       </Layout>
