@@ -28,7 +28,7 @@ function Students() {
 
   const debouncedRefetch = _.debounce(() => {
     refetch();
-  }, 1000);
+  }, 500);
 
   const handleSearchTermChange = (e) => {
     setSearchTerm(e.target.value);

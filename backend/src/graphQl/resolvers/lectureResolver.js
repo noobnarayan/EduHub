@@ -19,9 +19,7 @@ export const LectureResolver = {
   Mutation: {
     createLecture: async (_, data, context) => {
       await authRole("Admin")(context);
-      return await createLecture({
-        data,
-      });
+      return await createLecture(data);
     },
     updateLecture: async (_, data) => {
       await authRole("Admin")(context);
