@@ -5,10 +5,10 @@ import { redis } from "../utils/redis/redisClient.js";
 const getAllLectures = asyncHandler(async () => {
   let lectures = redis.get("lectures");
 
-  if (lectures.length > 0) {
+  if (lectures) {
     lectures = JSON.parse(JSON.stringify(lectures));
   } else {
-    lectures = await Lecture.find();
+    lectures = await Lecture.find().populate("course");
     redis.set("lectures", JSON.stringify(lectures), { EX: 60 });
   }
   return lectures;
@@ -19,7 +19,7 @@ const getSingleLecture = asyncHandler(async (id) => {
   if (!lecture) {
     lecture = JSON.parse(JSON.stringify(lecture));
   } else {
-    lecture = await Lecture.findById(id);
+    lecture = await Lecture.findById(id).populate("course");
     redis.set("lecture", JSON.stringify(lecture), { EX: 60 });
   }
 });

@@ -4,7 +4,7 @@ import { redis } from "../utils/redis/redisClient.js";
 
 const getAllCourse = asyncHandler(async () => {
   let courses = await redis.get("courses");
-  if (courses.length > 0) {
+  if (courses) {
     courses = JSON.parse(JSON.stringify(courses));
   } else {
     courses = await Course.find();

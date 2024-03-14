@@ -8,6 +8,9 @@ import {
 import { authRole } from "../../middlewares/authRole.middleware.js";
 
 export const CourseResolvers = {
+  Course: {
+    id: (course) => course._id.toString(),
+  },
   Query: {
     courses: async () => await getAllCourse(),
     course: async (_, { id }) => await getSingleCourse(id),
@@ -15,7 +18,7 @@ export const CourseResolvers = {
   Mutation: {
     createCourse: async (_, { name, description, prerequisites }, context) => {
       await authRole("Admin")(context);
-      return await createCourse({ name, description, prerequisites }, context);
+      return await createCourse({ name, description, prerequisites });
     },
 
     updateCourse: async (

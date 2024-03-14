@@ -8,9 +8,7 @@ const cookieOptions = {
   sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   maxAge: 1000 * 60 * 60 * 24 * 7,
   domain:
-    process.env.NODE_ENV === "production"
-      ? "noobnarayan.in"
-      : "apollographql.com",
+    process.env.NODE_ENV === "production" ? "noobnarayan.in" : "localhost",
 };
 
 const getAllUsers = asyncHandler(async () => {
@@ -32,7 +30,7 @@ const getSingleUser = asyncHandler(async (id) => {
   if (user) {
     user = JSON.parse(JSON.stringify(user));
   } else {
-    user = await User.findById(id);
+    user = await User.findById(id).populate("courses");
     await redis.set("user", JSON.stringify(user), { EX: 60 });
   }
 

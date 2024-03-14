@@ -7,6 +7,9 @@ import {
 import { authRole } from "../../middlewares/authRole.middleware.js";
 
 export const UserResolvers = {
+  User: {
+    id: (user) => user._id.toString(),
+  },
   Query: {
     users: async (_, __, context) => {
       await authRole("Admin")(context);

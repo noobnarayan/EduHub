@@ -8,6 +8,9 @@ import {
 import { authRole } from "../../middlewares/authRole.middleware.js";
 
 export const LectureResolver = {
+  Lecture: {
+    id: (lecture) => lecture._id.toString(),
+  },
   Query: {
     lectures: async () => await getAllLectures(),
     lecture: async (_, { id }) => await getSingleLecture(id),
