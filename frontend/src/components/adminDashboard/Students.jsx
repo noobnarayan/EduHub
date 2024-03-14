@@ -44,8 +44,8 @@ function Students() {
   }, [data]);
 
   return (
-    <div className="bg-white h-full rounded-lg p-10 my-8">
-      <div className="flex justify-between items-center">
+    <div className="bg-white h-full rounded-lg p-2 md:p-10 my-8">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-3">
         <h1 className="text-2xl font-medium">All Students</h1>
         <Button type="primary" className="bg-black" icon={<PlusOutlined />}>
           Add new student
@@ -57,12 +57,12 @@ function Students() {
             size="large"
             placeholder="Search students..."
             prefix={<SearchOutlined style={{ marginRight: "0.4rem" }} />}
-            className="w-1/2 my-3"
+            className="w-full md:w-1/2 my-3"
             onChange={(e) => handleSearchTermChange(e)}
           />
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-3 my-5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 my-5">
         {students?.map((student, index) => (
           <div
             key={index}
