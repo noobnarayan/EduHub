@@ -16,8 +16,10 @@ const getAllUsers = asyncHandler(async (searchTerm = "") => {
   if (!users) {
     const filter = { name: { $regex: searchTerm, $options: "i" } };
     users = await User.find(filter).populate("courses");
-    await redis.set(`users:${searchTerm}`, JSON.stringify(users));
-    await redis.expire(`users:${searchTerm}`, 60);
+    const pipeline = redis.pipeline();
+    pipeline.set(`users:${searchTerm}`, JSON.stringify(users));
+    pipeline.expire(`users:${searchTerm}`, 30);
+    await pipeline.exec();
   } else {
     users = JSON.parse(JSON.stringify(users));
   }
@@ -31,8 +33,10 @@ const getSingleUser = asyncHandler(async (id) => {
     user = JSON.parse(JSON.stringify(user));
   } else {
     user = await User.findById(id).populate("courses");
-    await redis.set(`user:${id}`, JSON.stringify(user));
-    await redis.expire(`user:${id}`, 60);
+    const pipeline = redis.pipeline();
+    pipeline.set(`user:${id}`, JSON.stringify(user));
+    pipeline.expire(`user:${id}`, 30);
+    await pipeline.exec();
   }
   return user;
 });

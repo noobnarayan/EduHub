@@ -9,8 +9,10 @@ const getAllCourse = asyncHandler(async (searchTerm) => {
   } else {
     const filter = { name: { $regex: searchTerm, $options: "i" } };
     courses = await Course.find(filter);
-    await redis.set(`courses:${searchTerm}`, JSON.stringify(courses));
-    await redis.expire(`courses:${searchTerm}`, 60);
+    const pipeline = redis.pipeline();
+    pipeline.set(`courses:${searchTerm}`, JSON.stringify(courses));
+    pipeline.expire(`courses:${searchTerm}`, 30);
+    await pipeline.exec();
   }
   return courses;
 });
@@ -21,8 +23,10 @@ const getSingleCourse = asyncHandler(async (id) => {
     course = JSON.parse(JSON.stringify(course));
   } else {
     course = await Course.findById(id);
-    await redis.set(`course:${id}`, JSON.stringify(course));
-    await redis.expire(`course:${id}`, 60);
+    const pipeline = redis.pipeline();
+    pipeline.set(`course:${id}`, JSON.stringify(course));
+    pipeline.expire(`course:${id}`, 30);
+    await pipeline.exec();
   }
   return course;
 });
