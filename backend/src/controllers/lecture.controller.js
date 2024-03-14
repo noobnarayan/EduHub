@@ -3,7 +3,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { redis } from "../utils/redis/redisClient.js";
 
 const getAllLectures = asyncHandler(async () => {
-  let lectures = redis.get("lectures");
+  let lectures = await redis.get("lectures");
 
   if (lectures) {
     lectures = JSON.parse(JSON.stringify(lectures));
@@ -11,17 +11,19 @@ const getAllLectures = asyncHandler(async () => {
     lectures = await Lecture.find().populate("course");
     redis.set("lectures", JSON.stringify(lectures), { EX: 60 });
   }
-  return lectures;
+  console.log(lectures);
+  return lectures || [];
 });
 
 const getSingleLecture = asyncHandler(async (id) => {
-  let lecture = await redis.get("lecture");
-  if (!lecture) {
+  let lecture = await redis.get(`lecture:${id}`);
+  if (lecture) {
     lecture = JSON.parse(JSON.stringify(lecture));
   } else {
     lecture = await Lecture.findById(id).populate("course");
-    redis.set("lecture", JSON.stringify(lecture), { EX: 60 });
+    await redis.set(`lecture:${id}`, JSON.stringify(lecture), { EX: 60 });
   }
+  return lecture;
 });
 
 const createLecture = asyncHandler(async (data) => {

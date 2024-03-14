@@ -14,13 +14,14 @@ const getAllCourse = asyncHandler(async () => {
 });
 
 const getSingleCourse = asyncHandler(async (id) => {
-  let course = await redis.get("course");
+  let course = await redis.get(`course:${id}`);
   if (course) {
     course = JSON.parse(JSON.stringify(course));
   } else {
     course = await Course.findById(id);
-    await redis.set("course", JSON.stringify(course), { EX: 60 });
+    await redis.set(`course:${id}`, JSON.stringify(course), { EX: 60 });
   }
+  return course;
 });
 
 const createCourse = asyncHandler(async (course) => {

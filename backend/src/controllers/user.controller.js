@@ -23,17 +23,14 @@ const getAllUsers = asyncHandler(async () => {
 
   return users;
 });
-
 const getSingleUser = asyncHandler(async (id) => {
-  let user = await redis.get("user");
-
+  let user = await redis.get(`user:${id}`);
   if (user) {
     user = JSON.parse(JSON.stringify(user));
   } else {
     user = await User.findById(id).populate("courses");
-    await redis.set("user", JSON.stringify(user), { EX: 60 });
+    await redis.set(`user:${id}`, JSON.stringify(user), { EX: 60 });
   }
-
   return user;
 });
 

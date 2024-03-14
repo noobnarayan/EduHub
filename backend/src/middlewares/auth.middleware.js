@@ -19,9 +19,9 @@ export const verifyJWT = async (req, res) => {
       throw new Error(401, `Something went wrong: ${error}`);
     }
 
-    const user = await User.findById(decodedToken?._id).select(
-      "-password -refreshToken"
-    );
+    const user = await User.findById(decodedToken?._id)
+      .populate("courses")
+      .select("-password -refreshToken");
 
     if (!user) {
       throw new Error(401, "Invalid Access Token");
