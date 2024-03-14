@@ -9,7 +9,7 @@ export const CourseType = gql`
   }
 
   extend type Query {
-    courses: [Course]
+    courses(searchTerm: String): [Course]
     course(id: ID!): Course
   }
 

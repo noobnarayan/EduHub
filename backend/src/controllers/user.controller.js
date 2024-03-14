@@ -11,18 +11,21 @@ const cookieOptions = {
     process.env.NODE_ENV === "production" ? "noobnarayan.in" : "localhost",
 };
 
-const getAllUsers = asyncHandler(async () => {
-  let users = await redis.get("allUsers");
+const getAllUsers = asyncHandler(async (searchTerm = "") => {
+  console.log(searchTerm);
+  let users = await redis.get(`users:${searchTerm}`);
 
-  if (users) {
-    users = JSON.parse(JSON.stringify(users));
+  if (!users) {
+    const filter = { name: { $regex: searchTerm, $options: "i" } };
+    users = await User.find(filter).populate("courses");
+    await redis.set(`users:${searchTerm}`, JSON.stringify(users), { EX: 60 });
   } else {
-    users = await User.find().populate("courses");
-    await redis.set("allUsers", JSON.stringify(users), { EX: 60 });
+    users = JSON.parse(JSON.stringify(users));
   }
 
   return users;
 });
+
 const getSingleUser = asyncHandler(async (id) => {
   let user = await redis.get(`user:${id}`);
   if (user) {

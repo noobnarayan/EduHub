@@ -11,9 +11,9 @@ export const UserResolvers = {
     id: (user) => user._id.toString(),
   },
   Query: {
-    users: async (_, __, context) => {
+    users: async (_, { searchTerm = "" }, context) => {
       await authRole("Admin")(context);
-      return await getAllUsers();
+      return await getAllUsers(searchTerm);
     },
     user: async (_, { id }) => await getSingleUser(id),
     currentUser: async (_, __, { user }) => user,

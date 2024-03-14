@@ -12,7 +12,7 @@ export const CourseResolvers = {
     id: (course) => course._id.toString(),
   },
   Query: {
-    courses: async () => await getAllCourse(),
+    courses: async (_, { searchTerm = "" }) => await getAllCourse(searchTerm),
     course: async (_, { id }) => await getSingleCourse(id),
   },
   Mutation: {

@@ -12,7 +12,7 @@ export const LectureType = gql`
   }
 
   extend type Query {
-    lectures: [Lecture]
+    lectures(searchTerm: String): [Lecture]
     lecture(id: ID!): Lecture
   }
   extend type Mutation {

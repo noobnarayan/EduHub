@@ -2,13 +2,16 @@ import Course from "../models/course.model.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { redis } from "../utils/redis/redisClient.js";
 
-const getAllCourse = asyncHandler(async () => {
-  let courses = await redis.get("courses");
+const getAllCourse = asyncHandler(async (searchTerm) => {
+  let courses = await redis.get(`courses:${searchTerm}`);
   if (courses) {
     courses = JSON.parse(JSON.stringify(courses));
   } else {
-    courses = await Course.find();
-    await redis.set("courses", JSON.stringify(courses), { EX: 60 });
+    const filter = { name: { $regex: searchTerm, $options: "i" } };
+    courses = await Course.find(filter);
+    await redis.set(`courses:${searchTerm}`, JSON.stringify(courses), {
+      EX: 60,
+    });
   }
   return courses;
 });

@@ -16,7 +16,7 @@ export const UserType = gql`
   }
 
   extend type Query {
-    users: [User]
+    users(searchTerm: String): [User]
     user(id: ID!): User
     currentUser: User
   }

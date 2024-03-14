@@ -12,7 +12,8 @@ export const LectureResolver = {
     id: (lecture) => lecture._id.toString(),
   },
   Query: {
-    lectures: async () => await getAllLectures(),
+    lectures: async (_, { searchTerm = "" }) =>
+      await getAllLectures(searchTerm),
     lecture: async (_, { id }) => await getSingleLecture(id),
   },
   Mutation: {
